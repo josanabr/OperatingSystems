@@ -55,5 +55,5 @@ Loop 3
 
 Resolver a continuación los siguientes puntos en clase
 
-* ¿Qué son las banderas de compilación del programa `gcc`? ¿Explique qué significa la ejecución de este comando `gcc -Wall -O3  demo.c -o demo`?
+* ¿Qué son las banderas o *flags* de un programa de la línea de comandos? ¿Explique qué significan las banderas usadas a la hora de compilar el programa `demo.c`, `gcc -Wall -O3  demo.c -o demo`?
 
