@@ -31,4 +31,4 @@ Version paralela,
 
 * En lugar de usar la función de `fibo` utilice la [función de Ackerman](https://en.wikipedia.org/wiki/Ackermann_function)
 
-* ¿Qué caracteriza o hace especial a la función recursiva de Ackerman? Explique en terminos *castizos* 
+* ¿Qué caracteriza o hace especial a la función recursiva de Ackerman? Explique en términos *castizos* 
