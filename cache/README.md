@@ -57,3 +57,11 @@ Resolver a continuación los siguientes puntos en clase
 
 * ¿Qué son las banderas o *flags* de un programa de la línea de comandos? Explique qué significan las banderas usadas a la hora de compilar el programa `demo.c`, `gcc -Wall -O3  demo.c -o demo`
 
+* La constante `MAX_SIZE` que valor representa. La variable `*arr` qué cantidad de memoria ocupa?
+
+* Haga las modificaciones necesarias en el código para sacar los promedios de ejecución de cada uno de los tres loops.
+
+* La instrucción `j <<= 1` qué representa? Explique en palabras que quiere decir esta sentencia del ciclo for `for (j = 1 ; j <= 1024 ; j <<= 1)`. ¿Cuántas iteraciones llevará a cabo este ciclo?
+
+* El número de veces que se ejecutan los ciclos 2 y 3, es la misma? ¿Por qué se presentan cambios en los tiempos de ejecución?
+
