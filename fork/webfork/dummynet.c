@@ -30,8 +30,11 @@ Por John Sanabria - john.sanabria@correounivalle.edu.co
 #include<netdb.h>
 #include<signal.h>
 #include<fcntl.h>
+#include <errno.h>
 
 #include "dummynet.h"
+
+extern int errno;
 
 
 //
@@ -85,11 +88,29 @@ int startServer(char *port)
   return listenfd;
 }
 
+int startClient(char *host, int port) {
+  int sockfd;
+  int server;
+  struct sockaddr_in servaddr;
+
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  bzero(&servaddr, sizeof(servaddr));
+  servaddr.sin_family = AF_INET;
+  servaddr.sin_port = htons(port);
+  inet_pton(AF_INET, host, &(servaddr.sin_addr));
+  server = connect(sockfd, (struct sockaddr*)&servaddr,sizeof(servaddr));
+  if (server == -1) {
+   printf("Error conectandose a %s por el puerto %d\n",host, port);
+   return -1;
+  }
+  return sockfd;
+}
+
 //
 // Este metodo se encarga de hablar con el usuario y de responder a la solicitud
 // que este requiera.
 //
-void respond(int client)
+void respondHTTP(int client)
 {
   char mesg[99999], *reqline[3], data_to_send[BYTES], path[99999];
   int rcvd, fd, bytes_read;
@@ -151,4 +172,50 @@ int listenfd(int portfd) {
   client = accept (portfd, (struct sockaddr *) &clientaddr, &addrlen);
    
   return client;
+}
+
+int echoServer(int client, char *mesg, int *mesgsize) {
+  int rcvd, snd;
+  int errnum;
+
+  memset( (void*)mesg, (int)'\0', *mesgsize );
+
+  rcvd=recv(client, mesg, *mesgsize, 0);
+  if (rcvd == -1 || rcvd != *mesgsize) {
+    errnum = errno;
+    printf("[echoServer] Error recibiendo datos - '%s'\n",strerror(errnum));
+    return -1;
+  }
+  snd = send(client,mesg,rcvd,0);
+
+  if (snd == -1 || snd != rcvd) {
+    errnum = errno;
+    printf("[echoServer] Error enviando datos - '%s'\n",strerror(errnum));
+    return -1;
+  }
+
+  return snd;
+}
+
+int echoClient(int server, char *mesg) {
+  int rcvd, snd, stlen;
+  int errnum;
+  char *msg;
+
+  printf("[echoClient] a enviar mensaje '%s' (%d)\n",mesg, stlen = strlen(mesg));
+  msg = (char*) malloc(sizeof(char) * (stlen + 1));
+  memset( (void*)msg, (int)'\0', stlen );
+  snd = send(server,mesg, stlen,0);
+  if (snd == -1) {
+   errnum = errno;
+   printf("[echoClient] Error enviando mensaje - '%s'\n",strerror(errnum));
+   return -1;
+  }
+  rcvd=recv(server, msg, stlen, 0);
+  if (rcvd == -1) {
+   errnum = errno;
+   printf("[echoClient] Error recibiendo mensaje - '%s'\n",strerror(errnum));
+   return -1;
+  }
+  return rcvd;
 }

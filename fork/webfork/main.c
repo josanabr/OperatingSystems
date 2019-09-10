@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     {
       // incluir el codigo de modo que el hijo
       // del servidor web atienda la peticion
-      respond(client);
+      respondHTTP(client);
     }
   }
 

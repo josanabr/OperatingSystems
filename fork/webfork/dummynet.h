@@ -5,7 +5,10 @@
 #define ROOT getenv("PWD") 
 
 int startServer(char *);
-void respond(int);
+int startClient(char *,int);
+void respondHTTP(int);
 int listenfd(int);
+int echoServer(int, char*, int*);
+int echoClient(int, char*);
 
 #endif
