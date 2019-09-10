@@ -1,4 +1,6 @@
 /*
+Esta es la parte del codigo que tiene el corazon del servidor.
+
 AUTHOR: Abhijeet Rastogi (http://www.google.com/profiles/abhijeet.1989)
 
 This is a very simple HTTP server. Default port is 10000 and ROOT for the server is your current working directory..
@@ -32,9 +34,15 @@ Por John Sanabria - john.sanabria@correounivalle.edu.co
 #include "dummynet.h"
 
 
-void startServer(char *port)
+//
+// Este metodo tiene las instrucciones de codigo para inicializar un servidor.
+// Recibe una cadena de caracteres que representa el identificador de puerto
+// por donde escuchara el servidor.
+//
+int startServer(char *port)
 {
   struct addrinfo hints, *res, *p;
+  int listenfd;
 
   // getaddrinfo for host
   memset (&hints, 0, sizeof(hints));
@@ -74,10 +82,14 @@ void startServer(char *port)
     perror("listen() error");
     exit(1);
   }
+  return listenfd;
 }
 
-//client connection
-void respond()
+//
+// Este metodo se encarga de hablar con el usuario y de responder a la solicitud
+// que este requiera.
+//
+void respond(int client)
 {
   char mesg[99999], *reqline[3], data_to_send[BYTES], path[99999];
   int rcvd, fd, bytes_read;
@@ -94,7 +106,7 @@ void respond()
   {
     printf("%s", mesg);
     reqline[0] = strtok (mesg, " \t\n");
-    printf("\n\n(%s)\n\n",reqline[0],reqline[1],reqline[2]);
+    printf("\n\n(%s)\n\n",reqline[0]);
     if ( strncmp(reqline[0], "GET\0", 4)==0 )
     {
       reqline[1] = strtok (NULL, " \t");
@@ -130,3 +142,13 @@ void respond()
   close(client);
 }
 
+int listenfd(int portfd) {
+  int client;
+  struct sockaddr_in clientaddr;
+  socklen_t addrlen;
+
+  addrlen = sizeof(clientaddr);
+  client = accept (portfd, (struct sockaddr *) &clientaddr, &addrlen);
+   
+  return client;
+}

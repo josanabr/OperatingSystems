@@ -2,8 +2,10 @@
 #define __DUMMYNET__
 
 #define BYTES 1024
+#define ROOT getenv("PWD") 
 
-void startServer(char *);
-void respond();
+int startServer(char *);
+void respond(int);
+int listenfd(int);
 
 #endif
