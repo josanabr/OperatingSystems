@@ -1,4 +1,6 @@
 /*
+Esta es la parte del codigo que tiene el corazon del servidor.
+
 AUTHOR: Abhijeet Rastogi (http://www.google.com/profiles/abhijeet.1989)
 
 This is a very simple HTTP server. Default port is 10000 and ROOT for the server is your current working directory..
@@ -28,13 +30,22 @@ Por John Sanabria - john.sanabria@correounivalle.edu.co
 #include<netdb.h>
 #include<signal.h>
 #include<fcntl.h>
+#include <errno.h>
 
 #include "dummynet.h"
 
+extern int errno;
 
-void startServer(char *port)
+
+//
+// Este metodo tiene las instrucciones de codigo para inicializar un servidor.
+// Recibe una cadena de caracteres que representa el identificador de puerto
+// por donde escuchara el servidor.
+//
+int startServer(char *port)
 {
   struct addrinfo hints, *res, *p;
+  int listenfd;
 
   // getaddrinfo for host
   memset (&hints, 0, sizeof(hints));
@@ -74,10 +85,32 @@ void startServer(char *port)
     perror("listen() error");
     exit(1);
   }
+  return listenfd;
 }
 
-//client connection
-void respond()
+int startClient(char *host, int port) {
+  int sockfd;
+  int server;
+  struct sockaddr_in servaddr;
+
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  bzero(&servaddr, sizeof(servaddr));
+  servaddr.sin_family = AF_INET;
+  servaddr.sin_port = htons(port);
+  inet_pton(AF_INET, host, &(servaddr.sin_addr));
+  server = connect(sockfd, (struct sockaddr*)&servaddr,sizeof(servaddr));
+  if (server == -1) {
+   printf("Error conectandose a %s por el puerto %d\n",host, port);
+   return -1;
+  }
+  return sockfd;
+}
+
+//
+// Este metodo se encarga de hablar con el usuario y de responder a la solicitud
+// que este requiera.
+//
+void respondHTTP(int client)
 {
   char mesg[99999], *reqline[3], data_to_send[BYTES], path[99999];
   int rcvd, fd, bytes_read;
@@ -94,7 +127,7 @@ void respond()
   {
     printf("%s", mesg);
     reqline[0] = strtok (mesg, " \t\n");
-    printf("\n\n(%s)\n\n",reqline[0],reqline[1],reqline[2]);
+    printf("\n\n(%s)\n\n",reqline[0]);
     if ( strncmp(reqline[0], "GET\0", 4)==0 )
     {
       reqline[1] = strtok (NULL, " \t");
@@ -130,3 +163,59 @@ void respond()
   close(client);
 }
 
+int listenfd(int portfd) {
+  int client;
+  struct sockaddr_in clientaddr;
+  socklen_t addrlen;
+
+  addrlen = sizeof(clientaddr);
+  client = accept (portfd, (struct sockaddr *) &clientaddr, &addrlen);
+   
+  return client;
+}
+
+int echoServer(int client, char *mesg, int *mesgsize) {
+  int rcvd, snd;
+  int errnum;
+
+  memset( (void*)mesg, (int)'\0', *mesgsize );
+
+  rcvd=recv(client, mesg, *mesgsize, 0);
+  if (rcvd == -1 || rcvd != *mesgsize) {
+    errnum = errno;
+    printf("[echoServer] Error recibiendo datos - '%s'\n",strerror(errnum));
+    return -1;
+  }
+  snd = send(client,mesg,rcvd,0);
+
+  if (snd == -1 || snd != rcvd) {
+    errnum = errno;
+    printf("[echoServer] Error enviando datos - '%s'\n",strerror(errnum));
+    return -1;
+  }
+
+  return snd;
+}
+
+int echoClient(int server, char *mesg) {
+  int rcvd, snd, stlen;
+  int errnum;
+  char *msg;
+
+  printf("[echoClient] a enviar mensaje '%s' (%d)\n",mesg, stlen = strlen(mesg));
+  msg = (char*) malloc(sizeof(char) * (stlen + 1));
+  memset( (void*)msg, (int)'\0', stlen );
+  snd = send(server,mesg, stlen,0);
+  if (snd == -1) {
+   errnum = errno;
+   printf("[echoClient] Error enviando mensaje - '%s'\n",strerror(errnum));
+   return -1;
+  }
+  rcvd=recv(server, msg, stlen, 0);
+  if (rcvd == -1) {
+   errnum = errno;
+   printf("[echoClient] Error recibiendo mensaje - '%s'\n",strerror(errnum));
+   return -1;
+  }
+  return rcvd;
+}
