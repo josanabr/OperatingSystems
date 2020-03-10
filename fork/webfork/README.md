@@ -2,62 +2,9 @@
 
 En este directorio se encuentran algunos códigos en C que permiten conocer de forma práctica la operación de los Sockets en C.
 
-En particular hay tres archivos que permiten ejecutar un servidor web muy básico. El esqueleto del servidor web está en el archivo [main.c](main.c). 
+En particular hay tres archivos que permiten conformar un servidor web muy básico. 
 
-```
+* El programa principal del servidor web está en el archivo [main.c](main.c). 
+* Los archivos [dummynet.h](dummynet.h) y [dummynet.c](dummynet.c) contienen las definiciones e implementación de funciones auxiliares que son usadas por el programa definido en [main.c](main.c).
+* Finalmente, el [Makefile](Makefile) contiene la definición de un *label* que permite la compilación del servidor web y de la librería sobre la cual este se apoya para crear un servidor web.
 
-/*
-
-Este programa en C debe recibir el credito inicialmente de la siguiente persona:
-AUTHOR: Abhijeet Rastogi (http://www.google.com/profiles/abhijeet.1989)
-
-Convertirlo en su version modular y eliminar argumentos de invocacion del 
-comando son obras de John Sanabria
-
-Modificado para efectos de la clase 2019-09-10 
-Por John Sanabria - john.sanabria@correounivalle.edu.co
-
- */
-
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-
-#include "dummynet.h"
-
-int main(int argc, char* argv[])
-{
-  int client;
-  int portfd;
-  char PORT[6];
-
-  // Se asigna un numero de puerto al servidor 
-  if (argc == 2) {
-    strcpy(PORT, argv[1]);
-  } else {
-    strcpy(PORT,"10000");
-  }
-
-  printf("Server to be started at port no. [%s] with root directory as [%s]\n",PORT,ROOT);
-  portfd = startServer(PORT);
-
-  // ACCEPT connections
-  while (1)
-  {
-    // La funcion listenfd escucha por una peticion que realice un client
-    // un navegador
-    client = listenfd(portfd);
-    if (client<0) // error en la solicitud
-      perror("accept() error");
-    else // efectivamente se atiende la solicitud
-    {
-      // incluir el codigo de modo que el hijo
-      // del servidor web atienda la peticion
-      respondHTTP(client);
-    }
-  }
-
-  return 0;
-}
-
-```
