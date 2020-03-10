@@ -2,6 +2,7 @@
 
 Este programa en C debe recibir el credito inicialmente de la siguiente persona:
 AUTHOR: Abhijeet Rastogi (http://www.google.com/profiles/abhijeet.1989)
+https://blog.abhi.host/blog/2010/04/15/very-simple-http-server-writen-in-c/
 
 Convertirlo en su version modular y eliminar argumentos de invocacion del 
 comando son obras de John Sanabria
@@ -36,8 +37,8 @@ int main(int argc, char* argv[])
   // ACCEPT connections
   while (1)
   {
-    // La funcion listenfd escucha por una peticion que realice un client
-    // un navegador
+    // La funcion listenfd escucha por una peticion que realice un client,
+    // ejemplo un navegador
     client = listenfd(portfd);
     if (client<0) // error en la solicitud
       perror("accept() error");

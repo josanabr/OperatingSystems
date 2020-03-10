@@ -2,6 +2,7 @@
 Esta es la parte del codigo que tiene el corazon del servidor.
 
 AUTHOR: Abhijeet Rastogi (http://www.google.com/profiles/abhijeet.1989)
+https://blog.abhi.host/blog/2010/04/15/very-simple-http-server-writen-in-c/
 
 This is a very simple HTTP server. Default port is 10000 and ROOT for the server is your current working directory..
 
@@ -49,7 +50,7 @@ int startServer(char *port)
 
   // getaddrinfo for host
   memset (&hints, 0, sizeof(hints));
-  // Se indica que son sockets de tipo TCP
+  // Se indica que son sockets de tipo TCP y se usa IPv4
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
   // Esta asignacion 'ai_flags' y el 'NULL' en 'getaddrinfo()'
@@ -88,6 +89,10 @@ int startServer(char *port)
   return listenfd;
 }
 
+//
+// Este metodo permite la creacion de un socket que se conecta a un 'host' y a 
+// un 'port' dados como argumentos
+//
 int startClient(char *host, int port) {
   int sockfd;
   int server;
@@ -119,10 +124,10 @@ void respondHTTP(int client)
 
   rcvd=recv(client, mesg, 99999, 0);
 
-  if (rcvd<0)    // receive error
+  if (rcvd<0)    // error receiving data 
     fprintf(stderr,("recv() error\n"));
   else if (rcvd==0)    // receive socket closed
-    fprintf(stderr,"Client disconnected upexpectedly.\n");
+    fprintf(stderr,"Client disconnected unexpectedly.\n");
   else    // message received
   {
     printf("%s", mesg);
@@ -133,7 +138,7 @@ void respondHTTP(int client)
       reqline[1] = strtok (NULL, " \t");
       reqline[2] = strtok (NULL, " \t\n");
 
-      printf("\n\n(%s) (%s) (%s)\n\n",reqline[0],reqline[1],reqline[2]);
+      printf("\n\n[SERVER] request lines (%s) (%s) (%s)\n\n",reqline[0],reqline[1],reqline[2]);
       if ( strncmp( reqline[2], "HTTP/1.0", 8)!=0 && strncmp( reqline[2], "HTTP/1.1", 8)!=0 )
       {
         write(client, "HTTP/1.0 400 Bad Request\n", 25);
@@ -145,7 +150,7 @@ void respondHTTP(int client)
 
         strcpy(path, ROOT);
         strcpy(&path[strlen(ROOT)], reqline[1]);
-        printf("file: %s\n", path);
+        printf("[server] file to be retrieved: %s\n", path);
 
         if ( (fd=open(path, O_RDONLY))!=-1 )    //FILE FOUND
         {
