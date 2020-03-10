@@ -22,6 +22,7 @@ int main()
     double cpu_time;
     int i = 0;
     int j = 0;
+    int k = 0;
 
     /* MAX_SIZE array is too big for stack.This is an unfortunate rough edge of
      * the way the stack works.  It lives in a fixed-size buffer, set by the 
@@ -32,59 +33,26 @@ int main()
 
     /* CPU clock ticks count start */
 
-    printf("Loop 1\n");
-    for(int k = 0; k < 3; k++)
-    {
-        start = clock();
-
-        /* Loop 1 */
-        for (i = 0; i < MAX_SIZE; i++)
-            arr[i] += 3;
-
-        /* CPU clock ticks count stop */
-        end = clock();
-
-        cpu_time = ((double) (end - start)) / CLOCKS_PER_SEC;
-
-        printf("\tCPU time %.6f secs.\n", cpu_time);
-    }
-
-    printf("\nLoop 2\n");
-    for (j = 1 ; j <= 1024 ; j <<= 1)
-    {
-        /* CPU clock ticks count start */
-        start = clock();
-
-        /* Loop 2 */
-        for (i = 0; i < MAX_SIZE; i += j)
-            arr[i] += 3;
-
-        /* CPU clock ticks count stop */
-        end = clock();
-
-        cpu_time = ((double) (end - start)) / CLOCKS_PER_SEC;
-
-        printf("\tCPU time for (j = %d) %.6f secs.\n", j, cpu_time);
-    }
-
-
     // Third loop, performing the same operations as loop 2,
     // but only touching 16KB of memory
     printf("\nLoop 3\n");
-    for (j = 1 ; j <= 1024 ; j <<= 1)
+    for (k = 1; k <= 0xfffffff; k *= 2)
     {
+        j = 1024;
         /* CPU clock ticks count start */
         start = clock();
 
         /* Loop 3 */
-        for (i = 0; i < MAX_SIZE; i += j)
-            arr[i & 0xfff] += 3;
+        for (i = 0; i < MAX_SIZE; i ++)
+            //arr[i & 0xfff] += 3;
+            arr[i & k] += 3;
 
         /* CPU clock ticks count stop */
         end = clock();
 
         cpu_time = ((double) (end - start)) / CLOCKS_PER_SEC;
-        printf("\tCPU time for (j = %d) %.6f secs.\n", j, cpu_time);
+        //printf("\tCPU time for (j = %d) %.6f secs.\n", j, cpu_time);
+        printf("\tCPU time for (k = %d) %.6f secs.\n", k, cpu_time);
     }
     return 0;
 }

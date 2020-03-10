@@ -1,3 +1,11 @@
+# README.md
+
+En este directorio se encuentran algunos códigos en C que permiten conocer de forma práctica la operación de los Sockets en C.
+
+En particular hay tres archivos que permiten ejecutar un servidor web muy básico. El esqueleto del servidor web está en el archivo [main.c](main.c). 
+
+```
+
 /*
 
 Este programa en C debe recibir el credito inicialmente de la siguiente persona:
@@ -52,3 +60,4 @@ int main(int argc, char* argv[])
   return 0;
 }
 
+```
