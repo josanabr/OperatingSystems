@@ -31,6 +31,11 @@ int main()
 
     int *arr = (int*)malloc(MAX_SIZE * sizeof(int));
 
+    if (arr == NULL) {
+      printf("Asignacion de memoria a la variable 'arr' fallo");
+      return 1;
+    }
+
     /* CPU clock ticks count start */
 
     // Third loop, performing the same operations as loop 2,
@@ -54,5 +59,6 @@ int main()
         //printf("\tCPU time for (j = %d) %.6f secs.\n", j, cpu_time);
         printf("\tCPU time for (k = %d) %.6f secs.\n", k, cpu_time);
     }
+    free(arr);
     return 0;
 }
