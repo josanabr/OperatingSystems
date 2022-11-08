@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>/vagrant/spring-2022/OS/80/L06/leercadena.c.html</title>
+<meta name="Generator" content="Vim/8.1">
+<meta name="plugin-version" content="vim8.1_v1">
+<meta name="syntax" content="c">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,prevent_copy=">
+<meta name="colorscheme" content="none">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ffffff; background-color: #000000; }
+body { font-family: monospace; color: #ffffff; background-color: #000000; }
+* { font-size: 1em; }
+.PreProc { color: #5fd7ff; }
+.Type { color: #87ffaf; }
+.Comment { color: #00ffff; }
+.Constant { color: #ff40ff; }
+.Special { color: #ffd7d7; }
+.Statement { color: #ffff00; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Comment">/*</span>
+<span class="Comment"> * Este programa muestra como leer varias palabras del teclado (stdin)</span>
+<span class="Comment"> * Codigo tomado de: <a href="https://www.programiz.com/c-programming/c-strings">https://www.programiz.com/c-programming/c-strings</a></span>
+<span class="Comment"> *</span>
+<span class="Comment"> * Modificado por: John Sanabria - john.sanabria@correounivalle.edu.co</span>
+<span class="Comment"> * Fecha: 2021-02-26</span>
+<span class="Comment"> </span><span class="Comment">*/</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;assert.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;stdio.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;stdlib.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&lt;string.h&gt;</span>
+<span class="PreProc">#include </span><span class="Constant">&quot;leercadena.h&quot;</span>
+
+<span class="Comment">/*</span><span class="Comment">*</span>
+<span class="Comment"> * Lee un cadena por teclado.</span>
+<span class="Comment"> * @param[in] size tamano del buffer representado en cadena</span>
+<span class="Comment"> * @param[in] cadena buffer donde se almacenara lo leido de teclado</span>
+<span class="Comment"> * @param[out] tamano de la cadena leida</span>
+<span class="Comment">*/</span>
+
+<span class="Type">int</span> leer_de_teclado(<span class="Type">int</span> size, <span class="Type">char</span>* cadena) {
+  fgets(cadena, size, <span class="Constant">stdin</span>);
+  cadena[strlen(cadena) - <span class="Constant">1</span>] = <span class="Special">'\x0'</span>;
+
+  <span class="Statement">return</span> strlen(cadena);
+}
+
+<span class="Type">char</span>** de_cadena_a_vector(<span class="Type">char</span>* cadena) {
+  <span class="Type">int</span> i;
+  <span class="Type">char</span> *token;
+  <span class="Type">char</span> *delim = <span class="Constant">&quot; &quot;</span>;
+  <span class="Type">char</span>** resultado;
+
+  resultado = (<span class="Type">char</span>**)malloc(<span class="Statement">sizeof</span>(<span class="Type">char</span>*));
+  assert(resultado != <span class="Constant">NULL</span>);
+  i = <span class="Constant">0</span>;
+  token = strtok(cadena,delim);
+  <span class="Statement">while</span> ( token != <span class="Constant">NULL</span>) {
+    <span class="Type">int</span> cad_longitud;
+    <span class="Type">char</span> **result_temp;
+    cad_longitud = strlen(token) + <span class="Constant">1</span>;
+    <span class="Comment">// Copiar token en la posicion 'i'</span>
+    resultado[i] = strdup(token);
+    <span class="Comment">//printf(&quot;|%s|\n&quot;,resultado[i]); fflush(stdout);</span>
+    <span class="Comment">// En busca de la proxima cadena</span>
+    token = strtok(<span class="Constant">NULL</span>, delim);
+    i++;
+    result_temp = realloc(resultado, (i + <span class="Constant">1</span>)  * <span class="Statement">sizeof</span>(*resultado));
+    assert(result_temp != <span class="Constant">NULL</span>);
+    resultado = result_temp;
+  }
+
+  resultado[i] = <span class="Constant">NULL</span>;
+  <span class="Statement">return</span> resultado;
+}
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
