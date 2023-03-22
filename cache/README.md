@@ -60,7 +60,6 @@ Resolver a continuación los siguientes puntos en clase
 * La constante `MAX_SIZE` que valor representa. La variable `*arr` qué cantidad de memoria ocupa?
 
 * Haga las modificaciones necesarias en el código para sacar los promedios de ejecución de cada uno de los tres loops.
-[Enlace de apoyo](https://www.techiedelight.com/find-execution-time-c-program/).
 
 * La instrucción `j <<= 1` qué representa? Explique en palabras que quiere decir esta sentencia del ciclo for `for (j = 1 ; j <= 1024 ; j <<= 1)`. ¿Cuántas iteraciones llevará a cabo este ciclo?
 
