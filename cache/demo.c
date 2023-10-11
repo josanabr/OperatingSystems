@@ -68,7 +68,6 @@ int main()
         end = clock();
 
         cpu_time = ((double) (end - start)) / CLOCKS_PER_SEC;
-
         printf("\tCPU time for (j = %d) %.6f secs.\n", j, cpu_time);
     }
 
